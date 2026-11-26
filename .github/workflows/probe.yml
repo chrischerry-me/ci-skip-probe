@@ -1,0 +1,23 @@
+name: probe
+on:
+  pull_request:
+    types: [opened, synchronize, edited]
+jobs:
+  plain:
+    if: ${{ !(github.event.action == 'edited' && !github.event.changes.base) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1
+  named:
+    name: ${{ (github.event.action == 'edited' && !github.event.changes.base) && 'named (ignored edit)' || 'named' }}
+    if: ${{ !(github.event.action == 'edited' && !github.event.changes.base) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1
+  caller:
+    if: ${{ !(github.event.action == 'edited' && !github.event.changes.base) }}
+    uses: ./.github/workflows/inner.yml
+  ncaller:
+    name: ${{ (github.event.action == 'edited' && !github.event.changes.base) && 'ncaller (ignored edit)' || 'ncaller' }}
+    if: ${{ !(github.event.action == 'edited' && !github.event.changes.base) }}
+    uses: ./.github/workflows/inner.yml
